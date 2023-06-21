@@ -34,4 +34,4 @@ Contribuições são bem-vindas! Se você tiver sugestões, melhorias ou correç
 
 ## Licença
 
-Este projeto está licenciado sob a licença . Consulte o arquivo LICENSE para obter mais informações.
+Este projeto está licenciado sob a licença [unlicense]. Consulte o arquivo LICENSE para obter mais informações.

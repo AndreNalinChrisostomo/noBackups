@@ -51,7 +51,7 @@ else:
     exit()
 
 
-backupFolder = "./BACKUPS" #ALTERE O CAMINHO PARA FAZER BACKUP EM OUTRO LUGAR
+backupFolder = "BACKUPS" #ALTERE O CAMINHO PARA FAZER BACKUP EM OUTRO LUGAR
 
 colorama.init()
 
@@ -112,7 +112,7 @@ if not os.path.exists(backupFolder):
     
     for folder in os.listdir(currentFolder):
         if os.path.isdir(folder):
-            if folder != 'BACKUPS':
+            if folder != backupFolder:
                 folders.append(folder)
                 os.makedirs(os.path.join(backupFolder, folder))
                 hashes[folder] = calculate_folder_md5(folder)
@@ -126,14 +126,14 @@ else:
     backupFolderExists = True
     for folder in os.listdir(currentFolder):
         if os.path.isdir(folder):
-            if folder != 'BACKUPS':
+            if folder != backupFolder:
                 folders.append(folder)
                 hashes[folder] = calculate_folder_md5(folder)
                 continue
         
         #if there is a folder that is not in the backup folder, create it
         if not folder in os.listdir(backupFolder) and os.path.isdir(folder):
-            if folder != 'BACKUPS':
+            if folder != backupFolder:
                 os.makedirs(os.path.join(backupFolder, folder))
                 hashes[folder] = calculate_folder_md5(folder)
         else:
@@ -153,13 +153,6 @@ else:
     
     with open(os.path.join(backupFolder, jsonFileName), 'w') as f:                
         json.dump(hashes, f)
-
-
-if "BUILDS" in folders:
-    folders.remove("BUILDS")
-if "BACKUPS" in folders:
-    folders.remove("BACKUPS")
-
 
 
 if __name__ == '__main__':

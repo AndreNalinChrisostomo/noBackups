@@ -12,6 +12,17 @@ python3 noBackups.py
 
 3. Siga as instruções exibidas no console.
 
+## Módulos
+
+O programa depende dos seguintes módulos Python:
+
+- `colorama`: Biblioteca para impressão de texto colorido no console. Utilizada para imprimir mensagens com cores.
+- `hashlib`: Biblioteca para cálculo de hashes. Utilizada para calcular hashes MD5 dos arquivos.
+- `json`: Biblioteca para manipulação de arquivos JSON. Utilizada para armazenar e recuperar informações de hashes em um arquivo JSON.
+
+Você pode instalar todos os módulos necessários executando o comando `pip install -r requirements.txt`, conforme mencionado acima.
+
+
 ## Observações
 
 - Certifique-se de ter permissões adequadas para criar pastas e arquivos no diretório atual.

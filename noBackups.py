@@ -129,7 +129,7 @@ else:
             if folder != backupFolder:
                 folders.append(folder)
                 hashes[folder] = calculate_folder_md5(folder)
-                continue
+                
         
         #if there is a folder that is not in the backup folder, create it
         if not folder in os.listdir(backupFolder) and os.path.isdir(folder):

@@ -112,7 +112,7 @@ if not os.path.exists(backupFolder):
     
     for folder in os.listdir(currentFolder):
         if os.path.isdir(folder):
-            if folder != 'BACKUPS' and folder != 'BUILDS':
+            if folder != 'BACKUPS':
                 folders.append(folder)
                 os.makedirs(os.path.join(backupFolder, folder))
                 hashes[folder] = calculate_folder_md5(folder)
@@ -126,14 +126,14 @@ else:
     backupFolderExists = True
     for folder in os.listdir(currentFolder):
         if os.path.isdir(folder):
-            if folder != 'BACKUPS' and folder != 'BUILDS':
+            if folder != 'BACKUPS':
                 folders.append(folder)
                 hashes[folder] = calculate_folder_md5(folder)
                 continue
         
         #if there is a folder that is not in the backup folder, create it
         if not folder in os.listdir(backupFolder) and os.path.isdir(folder):
-            if folder != 'BACKUPS' and folder != 'BUILDS':
+            if folder != 'BACKUPS':
                 os.makedirs(os.path.join(backupFolder, folder))
                 hashes[folder] = calculate_folder_md5(folder)
         else:

@@ -36,6 +36,6 @@ Contribuições são bem-vindas! Se você tiver sugestões, melhorias ou correç
 
 Este projeto está licenciado sob a licença [unlicense]. Consulte o arquivo LICENSE para obter mais informações.
 
-##TODO
+## TODO
 - Adicionar flag de atualização de hash apenas
 - Estudar para conectar no google drive e mandar os backups direto para lá

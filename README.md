@@ -24,7 +24,7 @@ Você pode instalar todos os módulos necessários executando o comando `pip ins
 ## Observações
 
 - Certifique-se de ter permissões adequadas para criar pastas e arquivos no diretório atual.
-- O programa criará uma pasta chamada "BACKUPS" no diretório atual para armazenar os backups. (Você pode alterar o nome da pasta e a localidade dela através da variável ```backupFolder```
+- O programa criará uma pasta chamada "BACKUPS" no diretório atual para armazenar os backups. (Você pode alterar o nome da pasta e a localidade dela através da variável ```backupFolder```)
 
 ## Contribuição
 

@@ -5,7 +5,8 @@ Este é o repositório do programa "noBackups?". O objetivo deste programa é au
 ## Uso
 
 1. Certifique-se de ter o Python instalado.
-2. Execute o programa executando o seguinte comando no terminal:
+2. Certifique-se de ter o programa ```zip``` instalado na sua máquina.
+3. Execute o programa executando o seguinte comando no terminal:
 ```
 python3 noBackups.py
 ```
@@ -24,7 +25,8 @@ Você pode instalar todos os módulos necessários executando o comando `pip ins
 ## Observações
 
 - Certifique-se de ter permissões adequadas para criar pastas e arquivos no diretório atual.
-- O programa criará uma pasta chamada "BACKUPS" no diretório atual para armazenar os backups. (Você pode alterar o nome da pasta e a localidade dela através da variável ```backupFolder```)
+- O programa criará uma pasta chamada "BACKUPS" no diretório atual para armazenar os backups. (Você pode alterar o nome da pasta e a localidade dela através da variável ```backupFolder```).
+- Atualmente o programa foi testado apenas em um sistema baseado em ```Linux```. Mas em breve pretendo deixá-lo multiplataforma.
 
 ## Contribuição
 

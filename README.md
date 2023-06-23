@@ -38,4 +38,4 @@ Este projeto está licenciado sob a licença [unlicense]. Consulte o arquivo LIC
 
 ## TODO
 - Adicionar flag de atualização de hash apenas
-- Estudar para conectar no google drive e mandar os backups direto para lá
+

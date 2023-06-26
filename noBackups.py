@@ -5,6 +5,7 @@ import hashlib
 import json
 import zipfile
 from concurrent.futures import ThreadPoolExecutor
+import argparse
 
 
 banner = """⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝
@@ -33,12 +34,7 @@ text = """ _   _        ______            _                   ___
                                           |_|             """
                
 
-# Configurações iniciais
-backup_folder = "BACKUPS"  # ALTERE O CAMINHO PARA FAZER BACKUP EM OUTRO LUGAR
 
-colorama.init()
-
-hashes = {}
 
 
 def execute_zip_command(folder):
@@ -83,35 +79,33 @@ def create_backup_folders():
     """Cria as pastas de backup e calcula os hashes das pastas existentes."""
     if not os.path.exists(backup_folder):
         print(colorama.Fore.YELLOW + "=" * 55 + f"\nBackup folder not found, creating folder: [{backup_folder}]\n" + "=" * 55 + colorama.Style.RESET_ALL)
-        os.makedirs(backup_folder)
-        
+        os.makedirs(backup_folder)  
         for folder in os.listdir(current_folder):
             if os.path.isdir(folder) and folder != backup_folder:
                 folders.append(folder)
                 os.makedirs(os.path.join(backup_folder, folder))
                 hashes[folder] = calculate_folder_md5(folder)
         print(colorama.Fore.GREEN + "=" * 22 + " Zipping... " + "=" * 21 + colorama.Style.RESET_ALL)
-
         with open(os.path.join(backup_folder, json_file_name), 'w') as f:
             json.dump(hashes, f)
     else:
         print(colorama.Fore.GREEN + "=" * 40 + f"\nBackup folder found: [{backup_folder}]\n" + "=" * 40 + colorama.Style.RESET_ALL)
-
         for folder in os.listdir(current_folder):
-            if os.path.isdir(folder) and folder != backup_folder:
-                folders.append(folder)
+            if folder == backup_folder:
+                continue
+            if os.path.isdir(folder):
+                json_data = json.load(open(os.path.join(backup_folder, json_file_name)))
                 hashes[folder] = calculate_folder_md5(folder)
 
-            if folder not in os.listdir(backup_folder) and os.path.isdir(folder) and folder != backup_folder:
-                os.makedirs(os.path.join(backup_folder, folder))
-                hashes[folder] = calculate_folder_md5(folder)
+                if(json_data.get(folder) != None):    
+                    if hashes[folder] != json_data.get(folder):
+                        changed_folders.append(folder)
+                else:
+                    #primeiro backup da pasta
+                    os.makedirs(os.path.join(backup_folder, folder))
+                    changed_folders.append(folder)
             else:
-                if os.path.isdir(folder):
-                    with open(os.path.join(backup_folder, json_file_name)) as json_file:
-                        json_data = json.load(json_file)
-                        if folder != backup_folder:
-                            if hashes[folder] != json_data.get(folder):
-                                changed_folders.append(folder)
+                continue
 
         if len(changed_folders) == 0:
             print(colorama.Fore.GREEN + "=" * 11 + " No changes found " + "=" * 11 + colorama.Style.RESET_ALL)
@@ -123,30 +117,69 @@ def create_backup_folders():
         with open(os.path.join(backup_folder, json_file_name), 'w') as f:
             json.dump(hashes, f)
 
+def update_hashes(folders=[]):
+    """Atualiza as hashes no arquivo json"""
+    print("# Updating md5 hash for folders:", colorama.Fore.LIGHTGREEN_EX + "[" + ", ".join(folders) + "/]" + colorama.Style.RESET_ALL)
+    try:
+        with open(os.path.join(backup_folder, json_file_name)) as json_file:
+            json_data = json.load(json_file)
+            for folder in folders:
+                json_data[folder] = calculate_folder_md5(folder)
+            json.dump(json_data, open(os.path.join(backup_folder, json_file_name), 'w'))
+        print(colorama.Fore.GREEN + "=" * 22 + " Hashes updated " + "=" * 21 + colorama.Style.RESET_ALL)
+    except:
+        print(colorama.Fore.RED + "=" * 10 + " Hashes not found or folder not in json " + "=" * 10 + colorama.Style.RESET_ALL)
+        exit()
+
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Folder backup program')
+    parser.add_argument('-q', action='store_true', help='Enable silent mode. The banner will not be printed.')
+    parser.add_argument('-H', nargs='+', help='Hash mode. Update only the hashes of the specified folders.')
+    parser.add_argument('-b', metavar='backup_folder', help='Custom backup folder path. Default: ./BACKUPS') 
+    parser.add_argument('-s', nargs='+', help='Backup the specified folders.')
+
+
+    args = parser.parse_args()
+
+    # Configurações iniciais
+    backup_folder = "BACKUPS"  # ALTERE O CAMINHO PARA FAZER BACKUP EM OUTRO LUGAR
+    colorama.init()
+    hashes = {}
+
     current_date = datetime.date.today().strftime("%d-%m")
     current_folder = os.getcwd()
     json_file_name = ".hashes.json"
-
     folders = []
     changed_folders = []
 
-    print(banner)
-    print(text)
 
-    choice = input("\nTHIS WILL CREATE A BACKUP OF YOUR FOLDERS IN THE CURRENT DIRECTORY. DO YOU WANT TO CONTINUE? [y/n]\n")
-    if choice.lower() != "y":
+    
+    if not args.q:
+        print(banner)
+        print(text)
+    
+    if args.b:
+        backup_folder = args.b
+
+    if args.H:
+        update_hashes(args.H)
         exit()
+    else:
+        create_backup_folders()
 
-    create_backup_folders()
+    
+    if args.s:
+        changed_folders = args.s
 
-
+    
     with ThreadPoolExecutor(max_workers=10) as executor:
         # Enviar as tarefas para o executor
-        if not os.path.exists(backup_folder):
+        if len(changed_folders) == 0 and not args.s:
             for folder in folders:
                 executor.submit(execute_zip_command, folder)
         else:
             for folder in changed_folders:
+                #remove forward slashes
+                folder = folder.replace("/", "")
                 executor.submit(execute_zip_command, folder)

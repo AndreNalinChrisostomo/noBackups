@@ -11,11 +11,11 @@ Este é o repositório do programa "noBackups?". O objetivo deste programa é au
 4. Siga as instruções exibidas no console.
 
 ## Flags
-   -q: Habilita o modo silencioso. O banner não será impresso.
-   -H: Modo de hash. Atualiza apenas as hashes das pastas especificadas.
-   -b: Caminho personalizado para a pasta de backup. Padrão: ./BACKUPS.
-   -s: Realiza o backup das pastas especificadas.
-   -h: Help
+   - q: Habilita o modo silencioso. O banner não será impresso.
+   - H: Modo de hash. Atualiza apenas as hashes das pastas especificadas.
+   - b: Caminho personalizado para a pasta de backup. Padrão: ./BACKUPS.
+   - s: Realiza o backup das pastas especificadas.
+   - h: Help
 
 
 ## Módulos

@@ -4,6 +4,7 @@ import colorama
 import threading
 import hashlib
 import json
+import zipfile
 
 
 
@@ -56,23 +57,24 @@ backupFolder = "BACKUPS" #ALTERE O CAMINHO PARA FAZER BACKUP EM OUTRO LUGAR
 colorama.init()
 
 hashes = {}
-backupFolderExists = False
+
 
 # Function to execute the zip command in a thread
 def execute_zip_command(folder):
-    if os.path.isdir(backupFolder):
+    if os.path.exists(backupFolder):
         #check how many versions of the zip file there are
         versions = len(os.listdir(os.path.join(backupFolder, folder)))
 
         #create zip file name
         zip_file_name = f"{'0' + str(versions) if versions < 10 else str(versions)}_{folder}_{currentDate}.zip"
 
-        #execute the zip command
-        print("# zipping folder:" + colorama.Fore.LIGHTGREEN_EX + "[" + folder + "]" + colorama.Style.RESET_ALL)
-        command = f"zip -r -q {backupFolder}/{folder}/{zip_file_name} {folder}/"
-    
-        os.system(command)
-        # shutil.make_archive(f"{backupFolder}/{folder}/{zip_file_name}", 'zip', backupFolder)
+        zip_path = os.path.join(backupFolder, folder, zip_file_name)
+        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            # Percorrer a pasta e adicionar todos os arquivos ao arquivo zip
+            for root, _, files in os.walk(folder):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    zip_file.write(file_path, os.path.relpath(file_path, folder))
 
 
 
@@ -83,6 +85,8 @@ def calculate_md5(filename):
         for chunk in iter(lambda: file.read(4096), b''):
             hasher.update(chunk)
     return hasher.hexdigest()
+
+
 def calculate_folder_md5(folder_path):
     print("# Calculating md5 hash for folder:" + colorama.Fore.LIGHTGREEN_EX + "[" + folder_path + "/]" + colorama.Style.RESET_ALL)
     folder_md5 = hashlib.md5()
@@ -123,7 +127,7 @@ if not os.path.exists(backupFolder):
         json.dump(hashes, f)
 else:
     print(colorama.Fore.GREEN + "=" * 40 + "\nBackup folder found: [" + backupFolder + "]\n" + "=" * 40 + colorama.Style.RESET_ALL)
-    backupFolderExists = True
+    
     for folder in os.listdir(currentFolder):
         if os.path.isdir(folder):
             if folder != backupFolder:
@@ -156,22 +160,15 @@ else:
 
 
 if __name__ == '__main__':
-
-
-    threads = []
     
-    if not backupFolderExists:
+    if len(changedFolders) == 0:
         for folder in folders:
             p = threading.Thread(target=execute_zip_command, args=(folder,))
-            threads.append(p)
-            # p.run()
+            p.start()
     else:
         for folder in changedFolders:
             p = threading.Thread(target=execute_zip_command, args=(folder,))
-            threads.append(p)
-            # p.run()
-    
-    for x in threads:
-        x.run()
+            p.start()
+
 
     

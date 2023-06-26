@@ -1,7 +1,6 @@
 import os
 import datetime
 import colorama
-import threading
 import hashlib
 import json
 import zipfile
